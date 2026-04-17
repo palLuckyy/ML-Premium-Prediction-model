@@ -7,7 +7,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# Basic styling — nothing fancy, just clean
+# --- Styling ---
 st.markdown("""
 <style>
     .main { padding-top: 20px; }
@@ -52,19 +52,21 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# --- Header ---
 st.title("🏥 Health Insurance Cost Predictor")
-st.caption("Fill in the details below to get an estimated annual premium.")
+st.caption("Estimate your annual health insurance premium using Machine Learning.")
 st.divider()
 
+# --- Options ---
 categorical_options = {
     'Gender': ['Male', 'Female'],
     'Marital Status': ['Unmarried', 'Married'],
     'BMI Category': ['Normal', 'Obesity', 'Overweight', 'Underweight'],
-    'Smoking Status': ['No Smoking', 'Regular', 'Occasional'],
-    'Employment Status': ['Salaried', 'Self-Employed', 'Freelancer', ''],
+    'Smoking Status': ['Non-Smoker', 'Regular', 'Occasional'],
+    'Employment Status': ['Salaried', 'Self-Employed', 'Freelancer'],
     'Region': ['Northwest', 'Southeast', 'Northeast', 'Southwest'],
     'Medical History': [
-        'No Disease', 'Diabetes', 'High blood pressure',
+        'No Medical History', 'Diabetes', 'High blood pressure',
         'Diabetes & High blood pressure', 'Thyroid', 'Heart disease',
         'High blood pressure & Heart disease', 'Diabetes & Thyroid',
         'Diabetes & Heart disease'
@@ -82,7 +84,7 @@ with col2:
 with col3:
     marital_status = st.selectbox('Marital Status', categorical_options['Marital Status'])
 with col4:
-    number_of_dependants = st.number_input('No. of Dependants', min_value=0, max_value=20, step=1)
+    number_of_dependents = st.number_input('Number of Dependents', min_value=0, max_value=20, step=1)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
@@ -98,7 +100,7 @@ with col3:
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# --- Health Info ---
+# --- Health Information ---
 st.markdown("### Health Information")
 col1, col2, col3, col4 = st.columns(4)
 with col1:
@@ -112,7 +114,7 @@ with col4:
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# --- Plan Selection ---
+# --- Insurance Plan ---
 st.markdown("### Insurance Plan")
 col1, col2 = st.columns([1, 3])
 with col1:
@@ -120,15 +122,16 @@ with col1:
 
 st.divider()
 
-# --- Predict ---
+# --- Predict Button ---
 col_a, col_b, col_c = st.columns([2, 1, 2])
 with col_b:
-    predict_btn = st.button('Predict Cost')
+    predict_btn = st.button('Predict Premium')
 
+# --- Prediction Logic ---
 if predict_btn:
     input_dict = {
         'Age': age,
-        'Number of Dependants': number_of_dependants,
+        'Number of Dependents': number_of_dependents,
         'Income in Lakhs': income_lakhs,
         'Genetical Risk': genetical_risk,
         'Insurance Plan': insurance_plan,
@@ -144,15 +147,18 @@ if predict_btn:
     with st.spinner('Running prediction...'):
         prediction = predict(input_dict)
 
+    st.success("Prediction generated successfully!")
+
     col_l, col_m, col_r = st.columns([1, 2, 1])
     with col_m:
         st.markdown(f"""
         <div class="result-box">
-            <p>Estimated Annual Premium</p>
-            <h2>{prediction}</h2>
+            <p>💰 Estimated Annual Premium</p>
+            <h2>₹ {prediction} / year</h2>
             <p>Plan: <strong>{insurance_plan}</strong> &nbsp;|&nbsp; This is an estimate only.</p>
         </div>
         """, unsafe_allow_html=True)
 
+# --- Footer ---
 st.markdown("<br><br>", unsafe_allow_html=True)
 st.caption("⚠️ This tool provides estimates only and should not be treated as financial advice.")
